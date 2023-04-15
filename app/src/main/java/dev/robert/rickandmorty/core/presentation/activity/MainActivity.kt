@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
 import dev.robert.rickandmorty.core.presentation.designsystem.theme.RickAndMortyTheme
+import dev.robert.rickandmorty.feature.characters.presentation.characters.CharactersScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -24,22 +25,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    CharactersScreen()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    RickAndMortyTheme {
-        Greeting("Android")
-    }
-}
