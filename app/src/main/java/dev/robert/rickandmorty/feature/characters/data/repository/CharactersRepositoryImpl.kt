@@ -23,6 +23,7 @@ class CharactersRepositoryImpl
     override  fun getCharacters():  Flow<PagingData<Characters>>   {
 
         val pagingSourceFactory = { db.charactersDao().getCharacters() }
+        val charactersRemoteMediator = CharactersRemoteMediator(api, db)
 
         val pager = Pager(
             config = PagingConfig(
@@ -30,10 +31,7 @@ class CharactersRepositoryImpl
                 maxSize = NETWORK_PAGE_SIZE + (NETWORK_PAGE_SIZE * 2),
                 enablePlaceholders = false
             ),
-            remoteMediator = CharactersRemoteMediator(
-                api,
-                db
-            ),
+            remoteMediator = charactersRemoteMediator,
             pagingSourceFactory = pagingSourceFactory
         ).flow.map { pagingData ->
             pagingData.map { it.toDomain() }
@@ -45,56 +43,5 @@ class CharactersRepositoryImpl
     companion object {
         private const val NETWORK_PAGE_SIZE = 20
     }
-
-   /* @ExperimentalPagingApi
-    override suspend fun getCharacters(): Flow<Resource<PagingData<Characters>>> {
-        val pagingSourceFactory = { db.charactersDao().getCharacters() }
-        return flow {
-            emit(Resource.Loading())
-            val pager = Pager(
-                config = PagingConfig(
-                    pageSize = NETWORK_PAGE_SIZE,
-                    maxSize = NETWORK_PAGE_SIZE + (NETWORK_PAGE_SIZE * 2),
-                    enablePlaceholders = false
-                ),
-                remoteMediator = CharactersRemoteMediator(
-                    api,
-                    db
-                ),
-                pagingSourceFactory = pagingSourceFactory
-            ).flow.map { pagingData ->
-                pagingData.map { it.toDomain() }
-            }
-            emit(Resource.Success(pager))
-        }
-    }*/
-
-    /*@ExperimentalPagingApi
-    override  fun getCharacters(): Flow<Resource<PagingData<Characters>>> {
-        val pagingSourceFactory = { db.charactersDao().getCharacters() }
-        return flow {
-            emit(Resource.Loading())
-            val pager = Pager(
-                config = PagingConfig(
-                    pageSize = NETWORK_PAGE_SIZE,
-                    maxSize = NETWORK_PAGE_SIZE + (NETWORK_PAGE_SIZE * 2),
-                    enablePlaceholders = false
-                ),
-                remoteMediator = CharactersRemoteMediator(
-                    api,
-                    db
-                ),
-                pagingSourceFactory = pagingSourceFactory
-            ).flow.map { pagingData ->
-                pagingData.map { it.toDomain() }
-            }
-
-            *//*pager.flowOn(Dispatchers.IO).collectLatest {
-                Timber.d("getCharacters: $it")
-                emit(Resource.Success(it))
-            }*//*
-        }
-    }*/
-
 }
 
