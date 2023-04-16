@@ -1,4 +1,4 @@
-package dev.robert.rickandmorty.feature.characters.data.mediator
+package dev.robert.rickandmorty.core.data.datasources.remote.mediator
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -20,11 +20,51 @@ class CharactersRemoteMediator(
     private val appDb: RickAndMortyDatabase,
 ) : RemoteMediator<Int, CharactersEntity>() {
 
-    override suspend fun initialize(): InitializeAction {
-        return InitializeAction.LAUNCH_INITIAL_REFRESH
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, CharactersEntity>
+    ): MediatorResult {
+        return try {
+            val page = when(loadType){
+                LoadType.REFRESH -> 1
+                LoadType.PREPEND ->{
+                    return MediatorResult.Success(endOfPaginationReached = true)
+                }
+                LoadType.APPEND -> {
+                    val lastItem = state.lastItemOrNull()
+                    if(lastItem == null){
+                        1
+                    }else{
+                        (lastItem.id / state.config.pageSize) + 1
+                    }
+                }
+            }
+            val apiResponse = apiService.getAllCharacters(
+                page = page
+            )
+            val characters = apiResponse.resultDtos
+
+            appDb.withTransaction {
+                if(loadType == LoadType.REFRESH){
+                    appDb.charactersDao().deleteCharacters()
+                }
+                val charactersEntity = characters.map { it.toEntityResults() }
+                appDb.charactersDao().insertCharacters(charactersEntity)
+            }
+            MediatorResult.Success(endOfPaginationReached = characters.isEmpty())
+        }catch (e: HttpException){
+            MediatorResult.Error(e)
+        }
+        catch (e: IOException){
+            MediatorResult.Error(e)
+        }
     }
 
-    override suspend fun load(
+    /*override suspend fun initialize(): InitializeAction {
+        return InitializeAction.LAUNCH_INITIAL_REFRESH
+    }*/
+
+    /*override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, CharactersEntity>
     ): MediatorResult {
@@ -103,5 +143,6 @@ class CharactersRemoteMediator(
             ?.let { repo ->
                 appDb.remoteKeysDao().remoteKeysCharacterId(repo.id)
             }
-    }
+    }*/
+
 }

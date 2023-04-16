@@ -3,9 +3,8 @@ package dev.robert.rickandmorty.feature.characters.data.repository
 import androidx.paging.*
 import dev.robert.rickandmorty.core.data.datasources.local.RickAndMortyDatabase
 import dev.robert.rickandmorty.core.data.datasources.remote.ApiService
-import dev.robert.rickandmorty.core.utils.Resource
 import dev.robert.rickandmorty.feature.characters.data.mappers.toDomain
-import dev.robert.rickandmorty.feature.characters.data.mediator.CharactersRemoteMediator
+import dev.robert.rickandmorty.core.data.datasources.remote.mediator.CharactersRemoteMediator
 import dev.robert.rickandmorty.feature.characters.domain.model.Characters
 import dev.robert.rickandmorty.feature.characters.domain.respository.CharactersRepository
 import kotlinx.coroutines.flow.*
@@ -17,7 +16,6 @@ class CharactersRepositoryImpl
     private val api: ApiService,
     private val db: RickAndMortyDatabase
 ): CharactersRepository {
-
 
     @ExperimentalPagingApi
     override  fun getCharacters():  Flow<PagingData<Characters>>   {
