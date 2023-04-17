@@ -24,9 +24,16 @@ import javax.inject.Inject
 @HiltViewModel
 class CharactersViewModel @Inject constructor(
     private val charactersRepository: CharactersRepository,
+    /**
+     *     Injecting pager here exposes CharacterEntity from data layer.
+     *     This violates clean architecture principles
+     */
     pager : Pager<Int, CharactersEntity>
 ) : ViewModel() {
 
+    /**
+     * This works well but violates clean architecture guidelines
+     */
     val characters = pager
         .flow
         .map { pagingData->
@@ -36,7 +43,17 @@ class CharactersViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
-   /* private val _charactersState = mutableStateOf(CharactersState())
+
+
+
+
+
+    /**
+     * This function needs to be troubleshooted. Works fine but upon appending more items on the list,
+     * scrolls upwards. It is not in use right now
+     */
+
+    private val _charactersState = mutableStateOf(CharactersState())
      val charactersState = _charactersState as State<CharactersState>
 
     private val handler = CoroutineExceptionHandler { _, throwable ->
@@ -44,24 +61,26 @@ class CharactersViewModel @Inject constructor(
             isLoading = false,
             message = throwable.message ?: "Unknown error"
         )
-    }*/
+    }
 
-     /*private fun getCharacters(){
+    /**
+     * This function needs to be troubleshooted. Works fine but upon appending more items on the list,
+     * scrolls upwards.  It is not in use right now
+     */
+     private fun getCharacters(){
       viewModelScope.launch(handler) {
             _charactersState.value = charactersState.value.copy(isLoading = true)
-            val response = charactersRepository.getCharacters()
+            val response = charactersRepository.getCharacters().cachedIn(viewModelScope)
            _charactersState.value = CharactersState(
-                isLoading = false,
-                characters = response
-           )
+              characters = response,
+               isLoading = false
+          )
         }
     }
 
-    init {
+    /*init {
         getCharacters()
     }*/
-
-
 
 }
 
