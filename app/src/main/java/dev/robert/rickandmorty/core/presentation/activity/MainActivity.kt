@@ -1,4 +1,4 @@
-package dev.robert.rickandmorty
+package dev.robert.rickandmorty.core.presentation.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,8 +10,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.robert.rickandmorty.ui.theme.RickAndMortyTheme
+import dagger.hilt.android.AndroidEntryPoint
+import dev.robert.rickandmorty.core.presentation.designsystem.theme.RickAndMortyTheme
+import dev.robert.rickandmorty.feature.characters.presentation.characters.CharactersScreen
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,22 +25,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    CharactersScreen()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    RickAndMortyTheme {
-        Greeting("Android")
-    }
-}
