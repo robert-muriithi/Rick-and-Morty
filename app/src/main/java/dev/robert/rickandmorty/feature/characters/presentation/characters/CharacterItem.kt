@@ -1,6 +1,8 @@
 package dev.robert.rickandmorty.feature.characters.presentation.characters
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -8,11 +10,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 import dev.robert.rickandmorty.core.data.dto.LocationDto
@@ -26,9 +30,11 @@ import dev.robert.rickandmorty.feature.characters.domain.model.Characters
 fun CharacterItem(character: Characters, /*onCharacterClick: (Characters) -> Unit*/ modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
-        elevation = 2.dp
+        elevation = 1.dp
     ) {
-        Row(modifier = Modifier.fillMaxWidth().padding(3.dp)) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            ) {
             CoilImage(
                 imageModel = {
                     character.image
@@ -71,14 +77,8 @@ fun CharacterItem(character: Characters, /*onCharacterClick: (Characters) -> Uni
                     Text(
                         text = character.name,
                         style = MaterialTheme.typography.h6,
-                        fontFamily = gilroyRegularFont
-                    )
-                    Text(
-                        text = "Status: ${character.status}",
-                        fontStyle = FontStyle.Italic,
-                        color = Color.LightGray,
                         fontFamily = gilroyRegularFont,
-                        modifier = Modifier.padding(3.dp)
+                        softWrap = true
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -89,13 +89,37 @@ fun CharacterItem(character: Characters, /*onCharacterClick: (Characters) -> Uni
                     fontFamily = gilroyRegularFont,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(5.dp))
                 Text(
                     text = character.species,
                     style = MaterialTheme.typography.body1,
                     modifier = Modifier.fillMaxWidth(),
                     fontFamily = gilroyRegularFont
                 )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Box(modifier = Modifier
+                        .size(8.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(
+                            when(character.status){
+                                "Alive" -> Color.Green
+                                "Dead" -> Color.Red
+                                else -> Color.Gray
+                            }
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = character.status,
+                        style = MaterialTheme.typography.body1,
+                        fontFamily = gilroyRegularFont,
+                        fontSize = 12.sp
+                    )
+                }
+
             }
         }
     }
