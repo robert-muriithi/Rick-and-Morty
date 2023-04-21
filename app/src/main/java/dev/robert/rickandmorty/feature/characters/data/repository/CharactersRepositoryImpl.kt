@@ -5,6 +5,7 @@ import dev.robert.rickandmorty.core.data.datasources.local.RickAndMortyDatabase
 import dev.robert.rickandmorty.core.data.datasources.remote.ApiService
 import dev.robert.rickandmorty.feature.characters.data.mappers.toDomain
 import dev.robert.rickandmorty.core.data.datasources.remote.mediator.CharactersRemoteMediator
+import dev.robert.rickandmorty.core.utils.Resource
 import dev.robert.rickandmorty.feature.characters.domain.model.Characters
 import dev.robert.rickandmorty.feature.characters.domain.respository.CharactersRepository
 import kotlinx.coroutines.flow.*
@@ -36,6 +37,10 @@ class CharactersRepositoryImpl
         }
 
         return pager
+    }
+
+    override suspend fun getCharacterById(id: Int): Flow<Resource<Characters>> {
+        TODO("Not yet implemented")
     }
 
     companion object {
