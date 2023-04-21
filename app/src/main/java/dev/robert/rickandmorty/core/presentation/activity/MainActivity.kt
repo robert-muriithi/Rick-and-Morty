@@ -13,7 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
 import dev.robert.rickandmorty.core.presentation.designsystem.theme.RickAndMortyTheme
 import dev.robert.rickandmorty.feature.characters.presentation.characters.CharactersMainScreen
-import dev.robert.rickandmorty.feature.characters.presentation.characters.CharactersScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
