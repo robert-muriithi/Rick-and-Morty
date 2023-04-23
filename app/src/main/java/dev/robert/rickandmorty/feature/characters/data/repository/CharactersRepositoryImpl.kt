@@ -6,9 +6,13 @@ import dev.robert.rickandmorty.core.data.datasources.remote.ApiService
 import dev.robert.rickandmorty.feature.characters.data.mappers.toDomain
 import dev.robert.rickandmorty.core.data.datasources.remote.mediator.CharactersRemoteMediator
 import dev.robert.rickandmorty.core.utils.Resource
+import dev.robert.rickandmorty.feature.characters.domain.model.CharacterDetails
 import dev.robert.rickandmorty.feature.characters.domain.model.Characters
 import dev.robert.rickandmorty.feature.characters.domain.respository.CharactersRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -39,8 +43,20 @@ class CharactersRepositoryImpl
         return pager
     }
 
-    override suspend fun getCharacterById(id: Int): Flow<Resource<Characters>> {
-        TODO("Not yet implemented")
+    override suspend fun getCharacterById(id: Int): Flow<Resource<CharacterDetails>> {
+        return flow {
+            emit(Resource.Loading())
+            try {
+                val response = api.getCharacterDetails(id)
+                val responseToDomain = response.toDomain()
+                emit(Resource.Success(responseToDomain))
+
+            }catch (e: IOException){
+                emit(Resource.Error(e.message ?: "Check your internet Connection"))
+            } catch (e: HttpException){
+                emit(Resource.Error(e.message ?: "An unknown error occurred"))
+            }
+        }.flowOn(Dispatchers.IO)
     }
 
     companion object {
